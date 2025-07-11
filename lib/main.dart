@@ -1,11 +1,12 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_bloc_api/bloc/note_event.dart';
-import 'package:flutter_bloc_api/bloc/note_state.dart';
-import 'package:flutter_bloc_api/models/note_model.dart';
-import 'bloc/note_bloc.dart';
-import 'repositories/note_repository_impl.dart';
+import 'presentation/bloc/note_event.dart';
+import 'presentation/bloc/note_state.dart';
+import 'domain/entities/note.dart';
+import 'presentation/bloc/note_bloc.dart';
+import 'data/repositories/note_repository_impl.dart';
+import 'data/datasources/note_remote_datasource_impl.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,7 +18,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Notes App',
       home: BlocProvider(
-        create: (context) => NoteBloc(NoteRepositoryImpl())..add(FetchNotes()),
+        create: (context) => NoteBloc(
+          NoteRepositoryImpl(
+            NoteRemoteDataSourceImpl(baseUrl: 'https://express-crud-two.vercel.app/api/v1'),
+          ),
+        )..add(FetchNotes()),
         child: NoteListScreen(),
       ),
     );
@@ -48,7 +53,7 @@ class NoteListScreen extends StatelessWidget {
                 final note = state.notes[index];
                 return ListTile(
                   title: Text(note.title),
-                  subtitle: Text(note.description),
+                  subtitle: Text(note.content),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -80,8 +85,8 @@ class NoteListScreen extends StatelessWidget {
   void _showNoteDialog(BuildContext context,
       {Note? note, required bool isUpdate}) {
     final titleController = TextEditingController(text: note?.title ?? '');
-    final descriptionController =
-        TextEditingController(text: note?.description ?? '');
+    final contentController =
+        TextEditingController(text: note?.content ?? '');
 
     showDialog(
       context: context,
@@ -96,8 +101,8 @@ class NoteListScreen extends StatelessWidget {
                 decoration: InputDecoration(labelText: 'Title'),
               ),
               TextField(
-                controller: descriptionController,
-                decoration: InputDecoration(labelText: 'Description'),
+                controller: contentController,
+                decoration: InputDecoration(labelText: 'Content'),
               ),
             ],
           ),
@@ -108,12 +113,11 @@ class NoteListScreen extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                // Access BlocProvider with correct type and context
                 final noteBloc = BlocProvider.of<NoteBloc>(context);
                 final newNote = Note(
                   id: isUpdate ? note!.id : '',
                   title: titleController.text,
-                  description: descriptionController.text,
+                  content: contentController.text,
                 );
                 if (isUpdate) {
                   noteBloc.add(UpdateNote(newNote.id, newNote));

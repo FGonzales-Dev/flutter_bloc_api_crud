@@ -1,6 +1,5 @@
-// lib/bloc/note_state.dart
 import 'package:equatable/equatable.dart';
-import '../models/note_model.dart';
+import '../../domain/entities/note.dart';
 
 abstract class NoteState extends Equatable {
   const NoteState();

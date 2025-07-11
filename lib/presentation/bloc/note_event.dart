@@ -1,6 +1,5 @@
-// lib/bloc/note_event.dart
 import 'package:equatable/equatable.dart';
-import '../models/note_model.dart';
+import '../../domain/entities/note.dart';
 
 abstract class NoteEvent extends Equatable {
   const NoteEvent();
