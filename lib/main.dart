@@ -5,8 +5,7 @@ import 'presentation/bloc/note_event.dart';
 import 'presentation/bloc/note_state.dart';
 import 'domain/entities/note.dart';
 import 'presentation/bloc/note_bloc.dart';
-import 'data/repositories/note_repository_impl.dart';
-import 'data/datasources/note_remote_datasource_impl.dart';
+import 'core/api/api_util.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,11 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Notes App',
       home: BlocProvider(
-        create: (context) => NoteBloc(
-          NoteRepositoryImpl(
-            NoteRemoteDataSourceImpl(baseUrl: 'https://express-crud-two.vercel.app/api/v1'),
-          ),
-        )..add(FetchNotes()),
+        create: (context) => ApiUtil.createNoteBloc()..add(FetchNotes()),
         child: NoteListScreen(),
       ),
     );

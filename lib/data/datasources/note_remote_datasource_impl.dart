@@ -12,8 +12,9 @@ class NoteRemoteDataSourceImpl implements NoteRemoteDataSource {
   Future<List<NoteModel>> fetchNotes() async {
     final response = await http.get(Uri.parse('$baseUrl/notes'));
     if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      return data.map((json) => NoteModel.fromJson(json)).toList();
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final List<dynamic> notesData = responseData['notes'];
+      return notesData.map((json) => NoteModel.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load notes');
     }
