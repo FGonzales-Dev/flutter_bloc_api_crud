@@ -45,8 +45,11 @@ class NoteListScreen extends StatelessWidget {
   void _showNoteDialog(BuildContext context, {required bool isUpdate}) {
     showDialog(
       context: context,
-      builder: (dialogContext) => NoteDialog(
-        isUpdate: isUpdate,
+      builder: (dialogContext) => BlocProvider.value(
+        value: BlocProvider.of<NoteBloc>(context),
+        child: NoteDialog(
+          isUpdate: isUpdate,
+        ),
       ),
     );
   }

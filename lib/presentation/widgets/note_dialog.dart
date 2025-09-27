@@ -67,7 +67,8 @@ class _NoteDialogState extends State<NoteDialog> {
   }
 
   void _handleSave(BuildContext context) {
-    final noteBloc = BlocProvider.of<NoteBloc>(context);
+    // Get the BlocProvider from the parent context (the screen context)
+    final noteBloc = BlocProvider.of<NoteBloc>(context, listen: false);
     final newNote = Note(
       id: widget.isUpdate ? widget.note!.id : '',
       title: titleController.text,

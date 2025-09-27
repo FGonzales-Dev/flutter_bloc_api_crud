@@ -35,7 +35,7 @@ class NoteRemoteDataSourceImpl implements NoteRemoteDataSource {
   @override
   Future<void> updateNote(NoteModel note) async {
     final response = await http.put(
-      Uri.parse('$baseUrl/notes/${note.id}'),
+      Uri.parse('$baseUrl/note/${note.id}'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(note.toJson()),
     );
@@ -46,7 +46,7 @@ class NoteRemoteDataSourceImpl implements NoteRemoteDataSource {
 
   @override
   Future<void> deleteNote(String id) async {
-    final response = await http.delete(Uri.parse('$baseUrl/notes/$id'));
+    final response = await http.delete(Uri.parse('$baseUrl/note/$id'));
     if (response.statusCode != 200) {
       throw Exception('Failed to delete note');
     }
