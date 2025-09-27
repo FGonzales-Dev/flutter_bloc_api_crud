@@ -23,7 +23,7 @@ class NoteRemoteDataSourceImpl implements NoteRemoteDataSource {
   @override
   Future<void> addNote(NoteModel note) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/notes'),
+      Uri.parse('$baseUrl/note/new'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(note.toJson()),
     );

@@ -13,31 +13,40 @@ class NoteListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notes'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => _showNoteDialog(context, isUpdate: false),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: ElevatedButton(
+                onPressed: () => _showNoteDialog(context, isUpdate: false),
+                child: const Text('Create note'),
+              ),
+            ),
+          ),
+          Expanded(
+            child: BlocBuilder<NoteBloc, NoteState>(
+              builder: (context, state) {
+                if (state is NoteLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is NoteLoaded) {
+                  return ListView.builder(
+                    itemCount: state.notes.length,
+                    itemBuilder: (context, index) {
+                      final note = state.notes[index];
+                      return NoteListItem(note: note);
+                    },
+                  );
+                } else if (state is NoteError) {
+                  return Center(child: Text(state.message));
+                } else {
+                  return Container();
+                }
+              },
+            ),
           ),
         ],
-      ),
-      body: BlocBuilder<NoteBloc, NoteState>(
-        builder: (context, state) {
-          if (state is NoteLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is NoteLoaded) {
-            return ListView.builder(
-              itemCount: state.notes.length,
-              itemBuilder: (context, index) {
-                final note = state.notes[index];
-                return NoteListItem(note: note);
-              },
-            );
-          } else if (state is NoteError) {
-            return Center(child: Text(state.message));
-          } else {
-            return Container();
-          }
-        },
       ),
     );
   }
